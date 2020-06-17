@@ -7,7 +7,7 @@ import DatePicker from '../components/Date';
 import TimePicker from '../components/Time';
 import KPI from '../components/KPI';
 
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { CheckOutlined, SmileOutlined, UserOutlined, SyncOutlined, SketchOutlined, ShoppingCartOutlined, ClockCircleOutlined, StockOutlined } from '@ant-design/icons';
 
 class Statistics extends Component {
@@ -22,6 +22,13 @@ class Statistics extends Component {
   visits: [],
   passersby: [],
   data: {},
+  loading: false,
+ }
+
+ componentDidMount() {
+  if (localStorage.getItem("token") == null) {
+   this.props.history.push("/err401")
+  }
  }
 
  onChange1 = (value, valueString) => {
@@ -40,16 +47,8 @@ class Statistics extends Component {
   this.setState({ endHour: valueString })
  };
 
- //  axios.interceptors.response.use(response => {
- //   return response;
- //  }, error => {
- //   if (error.response.status === 401) {
- //  this.props.history.push("/err401")
- // }
- // return error;
- //  });
-
  callingAPI = async () => {
+  this.setState({ loading: true })
   const token = localStorage.getItem("token")
   const { data: kpis } = await axios.get(`https://voldemort.klustera.com/get_kpis/1159/${this.state.startDate}/${this.state.endDate}/${this.state.startHour}/${this.state.endHour}`, {
    headers: {
@@ -63,7 +62,7 @@ class Statistics extends Component {
     'Content-Type': 'application/json'
    }
   })
-  this.setState({ kpis, graph });
+  this.setState({ kpis, graph, loading: false });
   this.settingState();
   this.graphData();
  }
@@ -131,19 +130,24 @@ class Statistics extends Component {
       <Button type="primary" onClick={this.callingAPI}>REFRESH</Button>
      </div>
     </div>
-    <div className="kpis-container" >
-     <KPI title={"Unique Visitors"} value={kpis?.clients} prefix={<CheckOutlined style={{ color: "#95de64" }} />} />
-     <KPI title={"Unique Loyals"} value={kpis?.branch_id} prefix={<SmileOutlined style={{ color: "#8c8c8c" }} />} />
-     <KPI title={"Visits"} value={kpis?.visits} prefix={<UserOutlined style={{ color: "#95de64" }} />} />
-     <KPI title={"% Loyalty Visitors"} value={kpis?.loyals} prefix={<SyncOutlined style={{ color: "#87e8de" }} />} />
-     <KPI title={"% Unique Visitors"} value={kpis?.potential_clients} prefix={<SketchOutlined style={{ color: "#87e8de" }} />} />
-     <KPI title={"Frequency Of Visit"} value={kpis?.frequency} prefix={<ShoppingCartOutlined style={{ color: "#87e8de" }} />} />
-     <KPI title={"Avg Time"} value={kpis?.avg_stay} prefix={<ClockCircleOutlined style={{ color: "#8c8c8c" }} />} formatter={new Date()} />
-     <KPI title={"Unique Passengers"} value={kpis?.impacts} prefix={<StockOutlined style={{ color: "#87e8de" }} />} />
-    </div>
-    <div className='graph-container'>
-     <Bar data={this.state?.data} options={options} />
-    </div>
+    {this.state.loading && <div className="spiner" > <Spin tip="Loading... Please wait 15 seconds before you try again, make sure you filled all inputs." size="large" /> </div>}
+    {!this.state.loading &&
+     <>
+      <div className="kpis-container" >
+       <KPI title={"Unique Visitors"} value={kpis?.clients} prefix={<CheckOutlined style={{ color: "#95de64", fontSize: '32px' }} />} />
+       <KPI title={"Unique Loyals"} value={kpis?.branch_id} prefix={<SmileOutlined style={{ color: "#8c8c8c", fontSize: '32px' }} />} />
+       <KPI title={"Visits"} value={kpis?.visits} prefix={<UserOutlined style={{ color: "#95de64", fontSize: '32px' }} />} />
+       <KPI title={"% Loyalty Visitors"} value={kpis?.loyals} prefix={<SyncOutlined style={{ color: "#87e8de", fontSize: '32px' }} />} />
+       <KPI title={"% Unique Visitors"} value={kpis?.potential_clients} prefix={<SketchOutlined style={{ color: "#87e8de", fontSize: '32px' }} />} />
+       <KPI title={"Frequency Of Visit"} value={kpis?.frequency} prefix={<ShoppingCartOutlined style={{ color: "#87e8de", fontSize: '32px' }} />} />
+       <KPI title={"Avg Time"} value={kpis?.avg_stay} prefix={<ClockCircleOutlined style={{ color: "#8c8c8c", fontSize: '32px' }} />} formatter={new Date()} />
+       <KPI title={"Unique Passengers"} value={kpis?.impacts} prefix={<StockOutlined style={{ color: "#87e8de", fontSize: '32px' }} />} />
+      </div>
+      <div className='graph-container'>
+       <Bar data={this.state?.data} options={options} />
+      </div>
+     </>
+    }
    </>
   )
  }

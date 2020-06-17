@@ -20,8 +20,20 @@ code {
 }
 
 .login-form {
-  max-width: 300px;
+  width: 300px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 0px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.23);
+}
 
+.login-inputs {
+  margin: 25px;
 }
 
 .login-form-button {
@@ -85,4 +97,12 @@ code {
   background: white;
   margin: 8px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.spiner {
+  width: 98vw;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

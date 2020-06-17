@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import '../index.css'
 
 class Login extends Component {
 
   onFinish = async (values) => {
+    axios.interceptors.response.use(response => {
+      return response;
+    }, error => {
+      if (error.response.status === 401) {
+        this.props.history.push("/err401")
+      }
+      return error;
+    });
     const pass = values.password
     const user = values.username
     const encodedData = btoa(`${user}:${pass}`)
@@ -17,8 +25,8 @@ class Login extends Component {
       }
     })
     const { token } = data
-    this.props.history.push("/kpi")
     localStorage.setItem("token", token)
+    this.props.history.push("/kpi")
   };
 
   render() {
@@ -32,7 +40,9 @@ class Login extends Component {
           }}
           onFinish={this.onFinish}
         >
+          <div className='login-inputs'>Please input your credentials</div>
           <Form.Item
+            className='login-inputs'
             name="username"
             rules={[
               {
@@ -44,6 +54,7 @@ class Login extends Component {
             <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
           </Form.Item>
           <Form.Item
+            className='login-inputs'
             name="password"
             rules={[
               {
@@ -58,13 +69,10 @@ class Login extends Component {
               placeholder="Password"
             />
           </Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" className="login-form-button">
               Log in
-     </Button>
+            </Button>
           </Form.Item>
         </Form>
       </div>
