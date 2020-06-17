@@ -69,6 +69,7 @@ code {
 
 .kpi {
   width: 22%;
+  min-width: 150px;
   height: 70px;
   margin: 10px;
   padding: 5px;
