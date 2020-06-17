@@ -32,6 +32,15 @@ class Login extends Component {
   render() {
     return (
       <div className="container_login">
+        <div>
+          <a href='https://klustera.com/'>
+            <img
+              src='https://lh6.googleusercontent.com/proxy/LLGvu4o60zKiMGhByotZf9LHaovceO_1dIY1uffPwEmbH7D3QTkWK1cff5ZRh0NVmkAs3w9CyiSFbMvFIPQ3-92o46Y8SImjvJ5eNErV'
+              alt='logoKlustera'
+              className='logo'
+            />
+          </a>
+        </div>
         <Form
           name="normal_login"
           className="login-form"

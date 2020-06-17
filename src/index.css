@@ -14,9 +14,17 @@ code {
 }
 
 .container_login {
+  width: 100vw;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin-top: 50px;
+  align-items: center;
+}
+
+.logo {
+  width: 200px;
+  margin: 30px;
 }
 
 .login-form {
